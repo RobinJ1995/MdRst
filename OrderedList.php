@@ -13,7 +13,7 @@ class OrderedList implements IConvertible
 		$str = '';
 		
 		foreach ($this->items as $i => $item)
-			$str .= $i . '. ' . $item . PHP_EOL;
+			$str .= ($i + 1) . '. ' . $item . PHP_EOL;
 		
 		return $str;
 	}
@@ -22,15 +22,15 @@ class OrderedList implements IConvertible
 	{
 		$str = '';
 		
-		foreach ($this->items as $item)
-			$str .= $i . '. ' . $item . PHP_EOL;
+		foreach ($this->items as $i => $item)
+			$str .= ($i + 1) . '. ' . $item . PHP_EOL;
 		
 		return $str;
 	}
 
 	public function html ()
 	{
-		$str = '<ol>';
+		$str = '<ol>' . PHP_EOL;
 		
 		foreach ($this->items as $item)
 			$str .= '<li>' . $item . '</li>' . PHP_EOL;

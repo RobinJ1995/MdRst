@@ -21,13 +21,21 @@ function startsWithNumberDot ($string)
 	if ($dotPos === false)
 		return false;
 	
-	$num = substr ($string, 0, $dotPos - 1);
+	$num = substr ($string, 0, $dotPos);
 	$isNumNum = is_numeric ($num);
 	
 	if (! $isNumNum)
 		return false;
 	else
 		return $dotPos;
+}
+
+function fillString ($string, $n, $filler = ' ')
+{
+	while (strlen ($string) < $n)
+		$string .= $filler;
+	
+	return $string;
 }
 
 # Markdown specific #
@@ -40,6 +48,20 @@ function mdHeadingLevel ($string)
 		if ($chars[$i] !== '#')
 			return $i;
 	}
+}
+
+function mdTableColSplit ($row)
+{
+	$columns = array ();
+	$cols = explode ('|', $row);
+	
+	foreach ($cols as $col)
+	{
+		if (! empty ($col))
+			$columns[] = trim ($col);
+	}
+	
+	return $columns;
 }
 
 ?>

@@ -6,6 +6,8 @@ require_once ('Heading.php');
 require_once ('String.php');
 require_once ('Code.php');
 require_once ('UnorderedList.php');
+require_once ('OrderedList.php');
+require_once ('Table.php');
 
 class MdRst
 {

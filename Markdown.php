@@ -55,7 +55,7 @@ class Markdown implements IConvertible
 							'content' => ''
 						);
 					}
-					else if (startsWith ($line, '* '))
+					else if (startsWith ($line, '* ') || startsWith ($line, '+ ') || startsWith ($line, '- '))
 					{
 						$mode = 'ulist';
 						$remember = array
@@ -79,7 +79,19 @@ class Markdown implements IConvertible
 							)
 						);
 					}
-					//TODO// Tables //
+					else if (startsWith ($line, '|'))
+					{
+						$mode = 'table';
+						$cols = mdTableColSplit ($line);
+						
+						$mode = 'table';
+						$remember = array
+						(
+							'cols' => $cols,
+							'align' => null,
+							'rows' => array ()
+						);
+					}
 					else
 					{
 						$this->content[] = new String ($line);
@@ -101,7 +113,7 @@ class Markdown implements IConvertible
 				}
 				else if ($mode == 'ulist')
 				{
-					if (startsWith ($line, '* '))
+					if (startsWith ($line, '* ') || startsWith ($line, '+ ') || startsWith ($line, '- '))
 					{
 						$remember['items'][] = trim (substr ($line, 2));
 					}
@@ -125,6 +137,56 @@ class Markdown implements IConvertible
 					else
 					{
 						$this->content[] = new OrderedList ($remember['items']);
+						
+						$mode = null;
+						$remember = null;
+						
+						$handled = false;
+					}
+				}
+				else if ($mode == 'table')
+				{
+					if (startsWith ($line, '|'))
+					{
+						if ($remember['align'] === null)
+						{
+							$chars = str_split ($line);
+							$colId = -1;
+							$remember['align'] = array ();
+							
+							foreach ($chars as $i => $char)
+							{
+								if ($char == '|')
+								{
+									$colId++;
+								}
+								else 
+								{
+									if (! isset ($remember['align'][$colId]))
+										$remember['align'][$colId] = array
+										(
+											'l' => null,
+											'r' => null
+										);
+									
+									if ($char == ':')
+									{
+										if ($remember['align'][$colId]['l'] === null)
+											$remember['align'][$colId]['l'] = true;
+										else
+											$remember['align'][$colId]['r'] = true;
+									}
+								}
+							}
+						}
+						else
+						{
+							$remember['rows'][] = mdTableColSplit ($line);
+						}
+					}
+					else
+					{
+						$this->content[] = new Table ($remember['cols'], $remember['align'], $remember['rows']);
 						
 						$mode = null;
 						$remember = null;

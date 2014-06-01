@@ -92,7 +92,7 @@ class Markdown implements IConvertible
 							'rows' => array ()
 						);
 					}
-					else
+					else if (! empty (trim ($line)))
 					{
 						$this->content[] = new String ($line);
 					}
